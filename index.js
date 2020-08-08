@@ -9,16 +9,13 @@ const COOKIE_NAME = "URL"
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
-/**
- * Respond with 
- * @param {Request} request
- */
-async function handleRequest(request) {
-  return new Response('Hello worker!', {
-    headers: { 'content-type': 'text/plain' },
-  })
-}
 
+async function handleRequest(request) {
+  const cookie = getCookie(request, COOKIE_NAME)
+  if (cookie) return fetchWebPage(cookie)
+
+  return fetchWebPage()
+}
 
 
 /**
@@ -79,6 +76,38 @@ async function fetchURL() {
   const randomIndex = Math.round(Math.random())
 
   return urls[randomIndex]
+}
+
+/**
+ * customises the title of the webpage.
+ */
+class TitleHandler {
+  element(element) {
+    element.prepend("Welcome! You are seeing")
+  }
+}
+
+
+/**
+ * customises the description.
+ */
+
+
+class DescriptionHandler {
+  element(element) {
+    element.append("It was created by Marzia Deodato. Check my work below!")
+  }
+}
+
+/**
+ * call to action
+ */
+
+class CTAHandler {
+  element(element) {
+    element.setAttribute("href", "https://github.com/MarziaD")
+    element.setInnerContent("Visit my github")
+  }
 }
 
 
